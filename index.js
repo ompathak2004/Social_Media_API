@@ -2,15 +2,16 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const helmet = require("helmet");
+const dotenv = require("dotenv");
 const morgan = require("morgan");
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
 
 const PORT = process.env.PORT || 3000;
-
+dotenv.config();
 mongoose.connect(
-  'mongodb+srv://om123:FYAzCFEjOmP0OQqh@cluster0.nkvylxx.mongodb.net/?retryWrites=true&w=majority',
+  process.env.MONGO_URL,
   { useNewUrlParser: true, useUnifiedTopology: true },
 ).then(()=>{
   console.log("Database connected")
