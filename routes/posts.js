@@ -1,10 +1,23 @@
 const router = require("express").Router();
 const Post = require("../models/Post");
 const User = require("../models/User");
+// const authenticateToken = require("./auth");
+
+// Middleware for user authentication using JWT
+const authenticateToken = (req, res, next) => {
+  const token = req.header('Authorization');
+  if (!token) return res.status(401).json('Access denied');
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json('Invalid token');
+    req.user = user;
+    next();
+  });
+};
 
 //create a post
 
-router.post("/", async (req, res) => {
+router.post("/",authenticateToken, async (req, res) => {
   const newPost = new Post(req.body);
   try {
     const savedPost = await newPost.save();
@@ -15,7 +28,7 @@ router.post("/", async (req, res) => {
 });
 //update a post
 
-router.put("/:id", async (req, res) => {
+router.put("/:id",authenticateToken, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (post.userId === req.body.userId) {
@@ -30,7 +43,7 @@ router.put("/:id", async (req, res) => {
 });
 //delete a post
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authenticateToken, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (post.userId === req.body.userId) {
@@ -45,7 +58,7 @@ router.delete("/:id", async (req, res) => {
 });
 //like / dislike a post
 
-router.put("/:id/like", async (req, res) => {
+router.put("/:id/like",authenticateToken, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post.likes.includes(req.body.userId)) {
@@ -62,7 +75,7 @@ router.put("/:id/like", async (req, res) => {
 
 //comment on post
 
-router.put("/:id/comment", async (req, res) => {
+router.put("/:id/comment",authenticateToken, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (post.userId === req.body.userId) {
@@ -78,3 +91,4 @@ router.put("/:id/comment", async (req, res) => {
 
 
 module.exports = router;
+module.exports = authenticateToken;

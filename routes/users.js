@@ -1,9 +1,10 @@
 const User = require("../models/User");
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+const authenticateToken = require("./auth")
 
 //update user
-router.put("/:id", async (req, res) => {
+router.put("/:id",authenticateToken, async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {
     if (req.body.password) {
       try {
@@ -27,7 +28,7 @@ router.put("/:id", async (req, res) => {
 });
 
 //delete user
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authenticateToken, async (req, res) => {
   if (req.body.userId ===  req.body.isAdmin) {
     try {
       await User.findByIdAndDelete(req.params.id);
