@@ -1,21 +1,8 @@
 const router = require("express").Router();
 const Post = require("../models/Post");
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
 
-// const authenticateToken = require("./auth");
-
-// Middleware for user authentication using JWT
-const authenticateToken = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) return res.status(401).json('Access denied');
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json('Invalid token');
-    req.user = user;
-    next();
-  });
-};
+const authenticateToken = require("./middleware");
 
 //create a post
 
@@ -93,4 +80,3 @@ router.put("/:id/comment",authenticateToken, async (req, res) => {
 
 
 module.exports = router;
-module.exports = authenticateToken;

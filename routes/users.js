@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
-const authenticateToken = require("./posts")
+const authenticateToken = require("./middleware")
 
 //update user
 router.put("/:id",authenticateToken, async (req, res) => {
